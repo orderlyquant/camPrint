@@ -1,14 +1,3 @@
-
-// This is an example typst template (based on the default template that ships
-// with Quarto). It defines a typst function named 'article' which provides
-// various customization options. This function is called from the 
-// 'typst-show.typ' file (which maps Pandoc metadata function arguments)
-//
-// If you are creating or packaging a custom typst template you will likely
-// want to replace this file and 'typst-show.typ' entirely. You can find 
-// documentation on creating typst templates and some examples here: 
-//   - https://typst.app/docs/tutorial/making-a-template/
-//   - https://github.com/typst/templates
 #import "@preview/drafting:0.2.0": *
 
 #let wideblock(content) = block(width:100%+2.5in,content)
@@ -16,12 +5,14 @@
 // Fonts used in front matter, sidenotes, bibliography, and captions
 #let sans-fonts = (
   //"Gill Sans", 
+  "Concourse T3",
   "Microsoft Sans Serif",
 )
 
 // Fonts used for headings and body copy
 #let serif-fonts = (
   //"Cambria",
+  "Equity Text B",
 )
 
 #let template(
@@ -42,8 +33,8 @@
   // Document metadata
   set document(title: title)
 
-  // Just a suttle lightness to decrease the harsh contrast
-  set text(fill:luma(30))
+  // Just a subtle lightness to decrease the harsh contrast
+  set text(fill:luma(40))
 
   // Tables and figures
   show figure: set figure.caption(separator: [.#h(0.5em)])
@@ -57,7 +48,7 @@
   
   show figure.where(kind: raw): set figure.caption(position: top)
   show figure.where(kind: raw): set figure(supplement: [Code], numbering: "1")
-  show raw: set text(font: "Lucida Console", size: 10pt)
+  show raw: set text(font: "Lucida Console", size: 8.5pt)
 
   // Equations
   set math.equation(numbering: "(1)")
@@ -143,11 +134,17 @@
         ]
       } else {
         if type(footer-content) == array {
-          footer-content.at(1)
-          linebreak()
+          let page = counter(page).get().first()
+          align(if calc.odd(page) { right } else { left })[
+            #footer-content.at(1)
+            #linebreak()
+          ]
         } else {
-          footer-content
-          linebreak()
+          let page = counter(page).get().first()
+          align(if calc.odd(page) { right } else { left })[
+            #footer-content
+            #linebreak()
+          ]
         }
         if draft [
           Draft document: #date
@@ -156,7 +153,10 @@
           Distribution limited to #distribution.
         ]
         linebreak()
-        [Page #counter(page).display()]
+        let page_num = counter(page).get().first()
+        align(if calc.odd(page_num) { right } else { left })[
+          Page #counter(page).display()
+        ]
       }
     })},
     background: if draft {rotate(45deg,text(font:sans-fonts,size:200pt, fill: rgb("EDEDF0"))[DRAFT])}

@@ -57,12 +57,18 @@ For instance, adding an `abstract` displays an indented block of text below the 
 #| fig-heigh: 3.9
 
 library(ggplot2)
+library(cowplot)
+
+theme_set(
+  theme_minimal_hgrid(font_size = 12, line_size = 0.25)
+)
 
 ggplot(
   aes(x = hp, y = mpg),
   data = mtcars
 ) +
-  geom_point()
+  geom_point() +
+  scale_y_continuous(limits = c(0, 40), expand = expansion(c(0, 0)))
 
 ```
 You may have noticed that this text spans the entire width of the page whereas the preceeding two pages were compressed to a four-inch-wide column in the typical manner of Tufte books. The template makes permissible the ability to break the narrow column format when desired by using the `#wideblock()` function, which takes a single required argument representing the content to be displayed. The simplest way to use the wideblock is by entering `#wideblock[...]`.
@@ -82,13 +88,12 @@ Now the `widecolumns()` block is finished.
 ```{r}
 #| echo: false
 
-library(ggplot2)
-
 ggplot(
   aes(x = hp, y = mpg),
   data = mtcars
 ) +
-  geom_point()
+  geom_point() +
+  scale_y_continuous(limits = c(0, 40), expand = expansion(c(0, 0)))
 
 ```
 
