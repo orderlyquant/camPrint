@@ -2,11 +2,6 @@
 // the source code for a typst template) and a 'typst-show.typ' which calls the
 // template's function (forwarding Pandoc metadata values as required)
 //
-// If you are creating or packaging a custom typst template you will likely
-// want to replace this file and 'typst-template.typ' entirely. You can find
-// documentation on creating typst templates here and some examples here:
-//   - https://typst.app/docs/tutorial/making-a-template/
-//   - https://github.com/typst/templates
 
 #show: doc => camPrint(
 $if(title)$
@@ -24,30 +19,17 @@ $endif$
 $if(draft)$
   draft: $draft$,
 $endif$
-$if(lang)$
-  lang: "$lang$",
-$endif$
-$if(region)$
-  region: "$region$",
+$if(distribution)$
+  draft: $distribution$,
 $endif$
 $if(abstract)$
   abstract: [$abstract$],
-  abstract-title: "$labels.abstract$",
 $endif$
-$if(margin)$
-  margin: ($for(margin/pairs)$$margin.key$: $margin.value$,$endfor$),
+$if(book-style)$
+  book-style: $book-style$,
 $endif$
-$if(papersize)$
-  paper: "$papersize$",
-$endif$
-$if(mainfont)$
-  font: ("$mainfont$",),
-$endif$
-$if(fontsize)$
-  fontsize: $fontsize$,
-$endif$
-$if(section-numbering)$
-  sectionnumbering: "$section-numbering$",
+$if(footer-content)$
+  footer-content: $footer-content$,
 $endif$
   doc,
 )
