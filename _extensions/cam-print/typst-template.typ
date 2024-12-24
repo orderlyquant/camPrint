@@ -1,27 +1,16 @@
-
-// This is an example typst template (based on the default template that ships
-// with Quarto). It defines a typst function named 'article' which provides
-// various customization options. This function is called from the 
-// 'typst-show.typ' file (which maps Pandoc metadata function arguments)
-//
-// If you are creating or packaging a custom typst template you will likely
-// want to replace this file and 'typst-show.typ' entirely. You can find 
-// documentation on creating typst templates and some examples here: 
-//   - https://typst.app/docs/tutorial/making-a-template/
-//   - https://github.com/typst/templates
 #import "@preview/drafting:0.2.0": *
 
 #let wideblock(content) = block(width:100%+2.5in,content)
 
-// Fonts used in front matter, sidenotes, bibliography, and captions
+// Fonts used in front matter, sidenotes, and captions
 #let sans-fonts = (
-  //"Gill Sans", 
+  "Concourse T4",
   "Microsoft Sans Serif",
 )
 
 // Fonts used for headings and body copy
 #let serif-fonts = (
-  //"Cambria",
+  "Equity Text B",
 )
 
 #let template(
@@ -29,21 +18,18 @@
   shorttitle: none,
   subtitle: none,
   date: none,
-  document-number: none,
   draft: false,
   distribution: none,
   abstract: none,
-  publisher: none,
-  toc: false,
-  bib: none,
+  book-style: false,
   footer-content: none,
   doc
 ) = {
   // Document metadata
   set document(title: title)
 
-  // Just a suttle lightness to decrease the harsh contrast
-  set text(fill:luma(30))
+  // Just a subtle lightness to decrease the harsh contrast
+  set text(fill:luma(40))
 
   // Tables and figures
   show figure: set figure.caption(separator: [.#h(0.5em)])
@@ -57,7 +43,7 @@
   
   show figure.where(kind: raw): set figure.caption(position: top)
   show figure.where(kind: raw): set figure(supplement: [Code], numbering: "1")
-  show raw: set text(font: "Lucida Console", size: 10pt)
+  show raw: set text(font: "Lucida Console", size: 8.5pt, fill: rgb("#268BD2"))
 
   // Equations
   set math.equation(numbering: "(1)")
@@ -113,20 +99,20 @@
     header: context {
       set text(font: sans-fonts)
       block(width: 100% + 3.5in - 1in,{
+      set align(
+        if calc.odd(counter(page).get().first()) {right} else {if book-style {left} else {right}}
+      )
       if counter(page).get().first() > 1 {
-        if document-number != none {document-number}
-        h(1fr)
         if shorttitle != none {upper(shorttitle)} else {upper(title)}
-        if publisher != none {
-          linebreak()
-          h(1fr)
-          upper(publisher)
         }
-      }})
+      })
     },
     footer: context {
-      set text(font: sans-fonts,size: 8pt)
+      set text(font: sans-fonts,size: 9pt)
       block(width: 100% +3.5in - 1in,{
+      set align(
+        if calc.odd(counter(page).get().first()) {right} else {if book-style {left} else {right}}
+      )
       if counter(page).get().first() == 1 {
         if type(footer-content) == array {
           footer-content.at(0)
@@ -136,7 +122,7 @@
           linebreak()
         }
         if draft [
-          Draft document: #date
+          #text(style: "italic")[Draft: #date]
         ]
         if distribution != none [
           Distribution limited to #distribution.
@@ -150,7 +136,7 @@
           linebreak()
         }
         if draft [
-          Draft document: #date
+          #text(style: "italic")[Draft: #date]
         ]
         if distribution != none [
           Distribution limited to #distribution.
@@ -187,28 +173,20 @@
       set text(size: 11pt)
       v(-0.65em)
       upper(subtitle)
-    })
+  })
   let abstractblock(abstract) = wideblock({
-      set text(font: sans-fonts)
+      set text(font: sans-fonts, size: 10.5pt)
       set par(hanging-indent: 3em)
       h(3em)
       abstract
-    })
-  // let tocblock() = wideblock({
-  //    set text(font: sans-fonts)
-  //    outline(indent:1em,title:none,depth:2)
-  //  })
+  })
 
   titleblock(title:title, subtitle:subtitle)
   text(size:11pt,font: sans-fonts,{
     if date != none {upper(date)}
-    // linebreak()
-    // if document-number != none {document-number}
   })
   
-
   if abstract != none {abstractblock(abstract)}
-  // if toc {tocblock()}
 
   // Finish setting up sidenotes
   set-page-properties()
@@ -245,7 +223,7 @@ Takes 2 optional keyword and 1 required argument:
     notecounter.step()
     text(weight:"bold",super(notecounter.display()))
   }
-  text(size:8pt,font: sans-fonts,margin-note(if numbered {
+  text(size:9.25pt,font: sans-fonts, margin-note(if numbered {
     text(weight:"bold",font:"Lucida Bright",size:11pt,{
       super(notecounter.display())
       text(size: 8pt, " ")
@@ -261,23 +239,27 @@ Takes 2 optional keyword and 1 required argument:
 
 #let camPrint(
   title: none,
-  date: none,
   shorttitle: none,
   subtitle: none,
-  abstract: none,
-  abstract-title: none,
-  cols: 1,
+  date: none,
   draft: false,
+  distribution: none,
+  abstract: none,
+  book-style: false,
+  footer-content: none,
   doc,
 ) = {
 
   show: template.with(
     title: title,
-    date: date,
     shorttitle: shorttitle,
     subtitle: subtitle,
+    date: date,
+    draft: draft,
+    distribution: distribution,
     abstract: abstract,
-    draft: draft
+    book-style: book-style,
+    footer-content: footer-content
   )
 
   doc

@@ -5,3 +5,5 @@
 .DS_Store
 *.Rproj
 *.pdf
+template.typ
+template_files/
